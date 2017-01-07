@@ -1,0 +1,6 @@
+[package]
+name = "an-zipper"
+version = "0.1.0"
+authors = ["Eliza Weisman <hi@hawkweisman.me>"]
+
+[dependencies]
