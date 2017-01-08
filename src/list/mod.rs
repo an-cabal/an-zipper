@@ -1,6 +1,8 @@
 use std::iter;
 use super::{List, Node, Stack};
 
+#[cfg(test)] mod test;
+
 impl<T> List<T> {
     pub fn iter(&self) -> Iter<T> {
         Iter { next: self.head.as_ref().map(|head| &**head)

@@ -11,3 +11,10 @@ unstable = []
 
 [dependencies.unstable-macros]
 git = "https://github.com/hawkw/unstable-macros.git"
+
+[dev-dependencies]
+quickcheck = "0.3"
+
+[dependencies.clippy]
+version = "*"
+optional = true
