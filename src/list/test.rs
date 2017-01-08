@@ -1,4 +1,4 @@
-use super::{List, Stack};
+use ::{List, Stack};
 use quickcheck::{Arbitrary, Gen};
 
 impl<T> Arbitrary for List<T>
