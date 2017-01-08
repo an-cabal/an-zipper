@@ -106,9 +106,9 @@ impl<T> List<T> {
     ///
     /// # Time complexity
     /// O(1)
-    #[inline] fn len(&self) -> usize { self.len }
+    #[inline] pub fn len(&self) -> usize { self.len }
 
-    #[inline] fn is_empty(&self) -> bool { self.head.is_none() }
+    #[inline] pub fn is_empty(&self) -> bool { self.head.is_none() }
 
     unstable_const_fn! {
         pub const fn new() -> Self {
