@@ -1,4 +1,5 @@
 use std::fmt;
+use std::iter;
 
 #[macro_use] extern crate unstable_macros;
 
@@ -101,6 +102,10 @@ impl<T> Stack<T> for List<T> {
 
 
 impl<T> List<T> {
+    /// Returns the length of the list
+    ///
+    /// # Time complexity
+    /// O(1)
     #[inline] fn len(&self) -> usize { self.len }
 
     #[inline] fn is_empty(&self) -> bool { self.head.is_none() }
@@ -123,6 +128,48 @@ impl<T> List<T> {
             self.len -= 1;
             node
         })
+    }
+
+    pub fn iter(&self) -> ListIter<T> {
+        ListIter(self.head.as_ref().map(|head| &**head))
+    }
+
+    pub fn iter_mut(&mut self) -> ListIterMut<T> {
+        ListIterMut(self.head.as_mut().map(|head| &mut **head))
+    }
+}
+
+impl<'a, T> IntoIterator for &'a List<T> {
+    type IntoIter = ListIter<'a, T>;
+    type Item = &'a T;
+
+    #[inline] fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<'a, T> IntoIterator for &'a mut List<T> {
+    type IntoIter = ListIterMut<'a, T>;
+    type Item = &'a mut T;
+
+    #[inline] fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
+    }
+}
+
+impl<T> iter::Extend<T> for List<T>  {
+    fn extend<I>(&mut self, iter: I)
+    where I: IntoIterator<Item=T> {
+        for i in iter { self.push(i); }
+    }
+}
+
+impl<'a, T> iter::Extend<&'a T> for List<T>
+where T: Copy + 'a {
+
+    fn extend<I>(&mut self, iter: I)
+    where I: IntoIterator<Item=&'a T> {
+        for i in iter { self.push(*i); }
     }
 }
 
@@ -147,7 +194,39 @@ where T: fmt::Display {
               )
     }
 }
+
+pub struct ListIter<'a, T: 'a>(Option<&'a Node<T>>);
+
+impl<'a, T> Iterator for ListIter<'a, T>
+where T: 'a {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.map(|node| {
+            self.0 = node.next.as_ref()
+                         .map(|next| &**next);
+            &node.elem
+        })
+    }
+}
+
+pub struct ListIterMut<'a, T: 'a>(Option<&'a mut Node<T>>);
+
+impl<'a, T> Iterator for ListIterMut<'a, T>
+where T: 'a {
+    type Item = &'a mut T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.take().map(|node| {
+            self.0 = node.next.as_mut()
+                         .map(|next| &mut **next);
+            &mut node.elem
+        })
+    }
+}
+
 //==- zip list -=============================================================
+/// A linked list with a zipper
 pub struct ZipList<T> { left: List<T>
                       , right: List<T>
                       }
@@ -209,6 +288,7 @@ impl<T> ZipList<T> {
     }
 
 }
+
 
 impl<T> fmt::Debug for ZipList<T>
 where T: fmt::Debug {
