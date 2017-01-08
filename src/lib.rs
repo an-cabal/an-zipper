@@ -154,9 +154,9 @@ impl<'a, T> IntoIterator for &'a mut List<T> {
 
 impl<T> IntoIterator for List<T> {
     type Item = T;
-    type IntoIter = list::DrainIter<T>;
+    type IntoIter = list::IntoIter<T>;
 
-    #[inline] fn into_iter(self) -> Self::IntoIter { self.drain_iter() }
+    #[inline] fn into_iter(self) -> Self::IntoIter { self.into_iter() }
 
 }
 

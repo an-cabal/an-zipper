@@ -12,8 +12,8 @@ impl<T> List<T> {
                     , len: self.len }
     }
 
-    pub fn drain_iter(self) -> DrainIter<T> {
-        DrainIter(self)
+    pub fn into_iter(self) -> IntoIter<T> {
+        IntoIter(self)
     }
 }
 
@@ -70,9 +70,9 @@ impl<'a, T> iter::ExactSizeIterator for IterMut<'a, T> {
     #[inline] fn len(&self) -> usize { self.len }
 }
 
-pub struct DrainIter<T>(List<T>);
+pub struct IntoIter<T>(List<T>);
 
-impl<T> Iterator for DrainIter<T> {
+impl<T> Iterator for IntoIter<T> {
     type Item = T;
     #[inline] fn next(&mut self) -> Option<Self::Item> { self.0.pop() }
 
@@ -82,6 +82,6 @@ impl<T> Iterator for DrainIter<T> {
     }
 }
 
-impl<T> iter::ExactSizeIterator for DrainIter<T> {
+impl<T> iter::ExactSizeIterator for IntoIter<T> {
     #[inline] fn len(&self) -> usize { self.0.len }
 }
