@@ -45,10 +45,6 @@ where T: fmt::Display {
 }
 
 impl<T> Node<T> {
-    #[inline]
-    fn link(self) -> Link<T> {
-        Some(Box::new(self))
-    }
 
     unstable_const_fn!{
         pub const fn new(elem: T) -> Self { Node { elem: elem, next: None } }
