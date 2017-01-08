@@ -137,6 +137,10 @@ impl<T> List<T> {
     pub fn iter_mut(&mut self) -> ListIterMut<T> {
         ListIterMut(self.head.as_mut().map(|head| &mut **head))
     }
+
+    pub fn drain_iter(self) -> ListDrainIter<T> {
+        ListDrainIter(self)
+    }
 }
 
 impl<'a, T> IntoIterator for &'a List<T> {
@@ -155,6 +159,14 @@ impl<'a, T> IntoIterator for &'a mut List<T> {
     #[inline] fn into_iter(self) -> Self::IntoIter {
         self.iter_mut()
     }
+}
+
+impl<T> IntoIterator for List<T> {
+    type Item = T;
+    type IntoIter = ListDrainIter<T>;
+
+    #[inline] fn into_iter(self) -> Self::IntoIter { self.drain_iter() }
+
 }
 
 impl<T> iter::Extend<T> for List<T>  {
@@ -223,6 +235,13 @@ where T: 'a {
             &mut node.elem
         })
     }
+}
+
+pub struct ListDrainIter<T>(List<T>);
+
+impl<T> Iterator for ListDrainIter<T> {
+    type Item = T;
+    #[inline] fn next(&mut self) -> Option<Self::Item> { self.0.pop() }
 }
 
 //==- zip list -=============================================================
