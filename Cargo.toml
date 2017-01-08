@@ -3,4 +3,11 @@ name = "an-zipper"
 version = "0.1.0"
 authors = ["Eliza Weisman <hi@hawkweisman.me>"]
 
-[dependencies]
+[features]
+# no features by default
+default = []
+# if building against unstable Rust
+unstable = []
+
+[dependencies.unstable-macros]
+git = "https://github.com/hawkw/unstable-macros.git"

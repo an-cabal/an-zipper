@@ -1,5 +1,7 @@
 use std::fmt;
 
+#[macro_use] extern crate unstable_macros;
+
 pub trait Stack<T> {
     fn push(&mut self, elem: T) -> &mut Self;
     fn pop(&mut self) -> Option<T>;
@@ -24,8 +26,9 @@ impl<T> Node<T> {
         Some(Box::new(self))
     }
 
-    #[inline]
-    fn new(elem: T) -> Self { Node { elem: elem, next: None } }
+    unstable_const_fn!{
+        pub const fn new(elem: T) -> Self { Node { elem: elem, next: None } }
+    }
 
 }
 
@@ -83,9 +86,10 @@ pub struct ZipList<T> { left: List<T>
 
 impl<T> ZipList<T> {
 
-    #[inline]
-    pub fn new() -> Self {
-        ZipList { left: List::new(), right: List::new() }
+    unstable_const_fn!{
+        pub const fn new() -> Self {
+            ZipList { left: List::new(), right: List::new() }
+        }
     }
 
     // -- wrappers around sublist methods -----------------------------------
