@@ -198,6 +198,12 @@ where T: fmt::Display {
     }
 }
 
+impl<T> Drop for List<T> {
+    fn drop(&mut self) {
+        for _ in self { }
+    }
+}
+
 //==- zip list -=============================================================
 /// A linked list with a zipper
 pub struct ZipList<T> { left: List<T>
