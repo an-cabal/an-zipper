@@ -1,7 +1,13 @@
+
+#![cfg_attr( feature = "clippy", feature(plugin) )]
+#![cfg_attr( feature = "clippy", plugin(clippy) )]
+
 use std::fmt;
 use std::iter;
+use std::convert;
 
 #[macro_use] extern crate unstable_macros;
+#[cfg(test)] #[macro_use] extern crate quickcheck;
 
 /// Trait describing stack behaviour
 pub trait Stack<T> {
@@ -158,6 +164,20 @@ impl<T> IntoIterator for List<T> {
 
     #[inline] fn into_iter(self) -> Self::IntoIter { self.into_iter() }
 
+}
+
+// impl<T, I> convert::From<I> for List<T>
+// where I: IntoIterator<Item=T> {
+//     #[inline] fn from(i: I) -> Self { i.into_iter().collect() }
+// }
+
+impl<T> iter::FromIterator<T> for List<T> {
+    fn from_iter<I>(iter: I) -> Self
+    where I: IntoIterator<Item=T> {
+        let mut list = List::new();
+        for i in iter { list.push(i); }
+        list
+    }
 }
 
 impl<T> iter::Extend<T> for List<T>  {
