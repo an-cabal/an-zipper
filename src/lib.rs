@@ -20,6 +20,30 @@ struct Node<T> { elem: T
                , next: Link<T>
                }
 
+impl<T> fmt::Debug for Node<T>
+where T: fmt::Debug {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!( f, "{:?}{}"
+              , self.elem
+              , self.next.as_ref()
+                    .map(|next| format!(", {:?}", next))
+                    .unwrap_or_else(|| { String::new() })
+              )
+    }
+}
+
+impl<T> fmt::Display for Node<T>
+where T: fmt::Display {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!( f, "{}{}"
+              , self.elem
+              , self.next.as_ref()
+                    .map(|next| format!(", {}", next))
+                    .unwrap_or_else(|| { String::new() })
+              )
+    }
+}
+
 impl<T> Node<T> {
     #[inline]
     fn link(self) -> Link<T> {
@@ -79,6 +103,27 @@ impl<T> List<T> {
     }
 }
 
+impl<T> fmt::Debug for List<T>
+where T: fmt::Debug {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!( f, "[{:?}]"
+              , self.head.as_ref()
+                    .map(|head| format!("{:?}", head))
+                    .unwrap_or_else(|| { String::new() })
+              )
+    }
+}
+
+impl<T> fmt::Display for List<T>
+where T: fmt::Display {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!( f, "[{}]"
+              , self.head.as_ref()
+                    .map(|head| format!("{}", head))
+                    .unwrap_or_else(|| { String::new() })
+              )
+    }
+}
 //==- zip list -=============================================================
 pub struct ZipList<T> { left: List<T>
                       , right: List<T>
@@ -140,4 +185,32 @@ impl<T> ZipList<T> {
         unimplemented!()
     }
 
+}
+
+impl<T> fmt::Debug for ZipList<T>
+where T: fmt::Debug {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!( f, "[{:?}_{:?}]"
+              , self.left.head.as_ref()
+                    .map(|head| format!("{:?}, ", head))
+                    .unwrap_or_else(String::new)
+              , self.right.head.as_ref()
+                    .map(|head| format!(", {:?}", head))
+                    .unwrap_or_else(String::new)
+              )
+    }
+}
+
+impl<T> fmt::Display for ZipList<T>
+where T: fmt::Display {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!( f, "[{}_{}]"
+              , self.left.head.as_ref()
+                    .map(|head| format!("{}, ", head))
+                    .unwrap_or_else(|| { String::new() })
+              , self.right.head.as_ref()
+                    .map(|head| format!(", {}", head))
+                    .unwrap_or_else(String::new)
+              )
+    }
 }
