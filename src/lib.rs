@@ -37,6 +37,7 @@ pub trait Stack<T> {
 }
 
 //==- singly-linked list -===================================================
+pub mod list;
 /// A simple singly-linked list
 pub struct List<T> { head: Link<T>
                    , len: usize
@@ -131,24 +132,10 @@ impl<T> List<T> {
             node
         })
     }
-
-    pub fn iter(&self) -> ListIter<T> {
-        ListIter { next: self.head.as_ref().map(|head| &**head)
-                 , len: self.len }
-    }
-
-    pub fn iter_mut(&mut self) -> ListIterMut<T> {
-        ListIterMut { next: self.head.as_mut().map(|head| &mut **head)
-                    , len: self.len }
-    }
-
-    pub fn drain_iter(self) -> ListDrainIter<T> {
-        ListDrainIter(self)
-    }
 }
 
 impl<'a, T> IntoIterator for &'a List<T> {
-    type IntoIter = ListIter<'a, T>;
+    type IntoIter = list::Iter<'a, T>;
     type Item = &'a T;
 
     #[inline] fn into_iter(self) -> Self::IntoIter {
@@ -157,7 +144,7 @@ impl<'a, T> IntoIterator for &'a List<T> {
 }
 
 impl<'a, T> IntoIterator for &'a mut List<T> {
-    type IntoIter = ListIterMut<'a, T>;
+    type IntoIter = list::IterMut<'a, T>;
     type Item = &'a mut T;
 
     #[inline] fn into_iter(self) -> Self::IntoIter {
@@ -167,7 +154,7 @@ impl<'a, T> IntoIterator for &'a mut List<T> {
 
 impl<T> IntoIterator for List<T> {
     type Item = T;
-    type IntoIter = ListDrainIter<T>;
+    type IntoIter = list::DrainIter<T>;
 
     #[inline] fn into_iter(self) -> Self::IntoIter { self.drain_iter() }
 
@@ -209,74 +196,6 @@ where T: fmt::Display {
                     .unwrap_or_else(|| { String::new() })
               )
     }
-}
-
-pub struct ListIter<'a, T: 'a>{ next: Option<&'a Node<T>>
-                              , len: usize }
-
-impl<'a, T> Iterator for ListIter<'a, T>
-where T: 'a {
-    type Item = &'a T;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.next.map(|node| {
-            self.next = node.next.as_ref()
-                         .map(|next| &**next);
-            self.len -= 1;
-            &node.elem
-        })
-    }
-
-    #[inline]
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        (self.len, Some(self.len))
-    }
-}
-
-impl<'a, T> iter::ExactSizeIterator for ListIter<'a, T> {
-    #[inline] fn len(&self) -> usize { self.len }
-}
-
-pub struct ListIterMut<'a, T: 'a>{ next: Option<&'a mut Node<T>>
-                                 , len: usize }
-
-impl<'a, T> Iterator for ListIterMut<'a, T>
-where T: 'a {
-    type Item = &'a mut T;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.next.take().map(|node| {
-            self.next = node.next.as_mut()
-                         .map(|next| &mut **next);
-            self.len -= 1;
-            &mut node.elem
-        })
-    }
-
-    #[inline]
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        (self.len, Some(self.len))
-    }
-}
-
-impl<'a, T> iter::ExactSizeIterator for ListIterMut<'a, T> {
-    #[inline] fn len(&self) -> usize { self.len }
-}
-
-pub struct ListDrainIter<T>(List<T>);
-
-impl<T> Iterator for ListDrainIter<T> {
-    type Item = T;
-    #[inline] fn next(&mut self) -> Option<Self::Item> { self.0.pop() }
-
-    #[inline]
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        (self.0.len, Some(self.0.len))
-    }
-}
-
-impl<T> iter::ExactSizeIterator for ListDrainIter<T> {
-    #[inline] fn len(&self) -> usize { self.0.len }
 }
 
 //==- zip list -=============================================================
