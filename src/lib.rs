@@ -110,9 +110,11 @@ impl<T> List<T> {
 
     #[inline] fn is_empty(&self) -> bool { self.head.is_none() }
 
-    #[inline] fn new() -> Self {
-        List { head: None
-             , len: 0 }
+    unstable_const_fn! {
+        pub const fn new() -> Self {
+            List { head: None
+                 , len: 0 }
+        }
     }
 
     fn cons(&mut self, mut node: Box<Node<T>>) -> &mut Self {
