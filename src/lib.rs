@@ -2,14 +2,41 @@ use std::fmt;
 
 #[macro_use] extern crate unstable_macros;
 
+/// Trait describing stack behaviour
 pub trait Stack<T> {
+    /// Push `elem` to the stack.
+    ///
+    /// # Arguments
+    /// - `elem`: an item of type `T` to be pushed to the stack
+    ///
+    /// # Returns
+    /// `&mut Self` so that multiple `push`es can be chained.
     fn push(&mut self, elem: T) -> &mut Self;
+
+    /// Remove the top item of the stack if it exists, returning it.
+    ///
+    /// # Returns
+    /// - `Some(T)` if an item was popped
+    /// - `None` if the stack is empty
     fn pop(&mut self) -> Option<T>;
+
+    /// Borrow the top item of the stack if it exists.
+    ///
+    /// # Returns
+    /// - `Some(&T)` if an item was popped
+    /// - `None` if the stack is empty
     fn peek(&self) -> Option<&T>;
+
+    /// Mutably borrow the top item of the stack if it exists.
+    ///
+    /// # Returns
+    /// - `Some(&mut T)` if an item was popped
+    /// - `None` if the stack is empty
     fn peek_mut(&mut self) -> Option<&mut T>;
 }
 
 //==- singly-linked list -===================================================
+/// A simple singly-linked list
 pub struct List<T> { head: Link<T>
                    , len: usize
                    }
