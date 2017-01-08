@@ -45,12 +45,15 @@ pub trait Stack<T> {
 //==- singly-linked list -===================================================
 pub mod list;
 /// A simple singly-linked list
+#[derive(Clone)]
 pub struct List<T> { head: Link<T>
                    , len: usize
                    }
 
 type Link<T> = Option<Box<Node<T>>>;
 
+
+#[derive(Clone)]
 struct Node<T> { elem: T
                , next: Link<T>
                }
