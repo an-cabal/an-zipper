@@ -62,4 +62,42 @@ quickcheck! {
 
         (0..items.len()).all(|_| list.peek() == items.last())
     }
+
+    fn iter_in_order(items: Vec<usize>) -> bool {
+        let mut list = List::new();
+
+        for item in items.clone() {
+            list.push(item);
+        }
+
+        let result = list.iter().collect::<Vec<_>>();
+        let reversed = items.iter().rev().collect::<Vec<_>>();
+        result == reversed
+    }
+
+    fn iter_mut_in_order(items: Vec<usize>) -> bool {
+        let mut list = List::new();
+
+        for item in items.clone() {
+            list.push(item);
+        }
+
+        for mut item in list.iter_mut() {
+            *item = *item + 1;
+        }
+
+        list.iter().zip(items.iter().rev())
+            .all(|(a, b)| *a == b + 1)
+    }
+
+    fn move_iter_in_order(items: Vec<usize>) -> bool {
+        let mut list = List::new();
+
+        for item in items.clone() {
+            list.push(item);
+        }
+
+        list.into_iter().zip(items.iter().rev())
+            .all(|(a, b)| &a == b)
+    }
 }
