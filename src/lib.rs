@@ -15,7 +15,6 @@
 
 use std::fmt;
 use std::iter;
-use std::convert;
 
 #[macro_use] extern crate unstable_macros;
 #[cfg(test)] #[macro_use] extern crate quickcheck;
