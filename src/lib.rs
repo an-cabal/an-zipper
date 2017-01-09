@@ -1,4 +1,15 @@
-
+//! A list with a zipper.
+//!
+//! A [zipper list] is a linked list structure with a moving cursor. It
+//! provides O(1) access to the elements to the immediate left and right of the
+//! zipper, and access to arbitrary elements in time proportional to their
+//! distance from the zipper.
+//!
+//! Our zipper list is implemented with a pair of singly-linked lists, so this
+//! crate also contains a [singly-linked list implementation].
+//!
+//! [zipper list]: https://en.wikipedia.org/wiki/Zipper_(data_structure)
+//! [singly-linked list implementation]: struct.List.html
 #![cfg_attr( feature = "clippy", feature(plugin) )]
 #![cfg_attr( feature = "clippy", plugin(clippy) )]
 
