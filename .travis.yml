@@ -26,9 +26,14 @@ matrix:
 before_install:
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update; fi
 cache: cargo
+install: |
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    pip install --user travis-cargo codecov &&
+    export PATH=$HOME/.local/bin:$PATH;
+  fi
 before_script: |
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-    pip install 'travis-cargo' --user &&
+    pip install --user &&
     export PATH=$HOME/.local/bin:$PATH;
   fi
 script: |
@@ -43,10 +48,25 @@ script: |
 after_success:
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then travis-cargo --only stable doc-upload;
   fi
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then travis-cargo coverage --no-sudo --verify;
+- |
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+    tar xzf master.tar.gz &&
+    cd kcov-master &&
+    mkdir build &&
+    cd build &&
+    cmake .. &&
+    make &&
+    sudo make install &&
+    cd ../.. &&
+    rm -rf kcov-master &&
+    for file in target/debug/an_zipper-*; do
+      mkdir -p "target/cov/$(basename $file)";
+      kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file";
+    done &&
+    bash <(curl -s https://codecov.io/bash) &&
+    echo "Uploaded code coverage"
   fi
-- bash <(curl -s https://codecov.io/bash) -F $TRAVIS_OS_NAME $TRAVIS_RUST_VERSION
-
 notifications:
   slack:
     rooms:
