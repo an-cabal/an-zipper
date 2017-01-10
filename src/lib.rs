@@ -278,65 +278,125 @@ impl<T> ZipList<T> {
     }
 
     unstable_const_fn!{
+        /// Create a new empty `ZipList`.
         pub const fn new() -> Self {
             ZipList { left: List::new(), right: List::new() }
         }
     }
 
     // -- wrappers around sublist methods -----------------------------------
+    /// Pop the item to the left of the zipper and return it.
+    ///
+    /// # Returns
+    /// - `Some(T)` if there is an item to the left of the zipper
+    /// - `None` if there are no items to the left of the zipper
     #[inline] pub fn pop_left(&mut self) -> Option<T> { self.left.pop() }
+
+    /// Pop the item to the right of the zipper and return it.
+    ///
+    /// # Returns
+    /// - `Some(T)` if there is an item to the right of the zipper
+    /// - `None` if there are no items to the right of the zipper
     #[inline] pub fn pop_right(&mut self) -> Option<T> { self.right.pop() }
+
+    /// Borrow the item to the left of the zipper.
+    ///
+    /// # Returns
+    /// - `Some(&T)` if there is an item to the left of the zipper
+    /// - `None` if there are no items to the left of the zipper
     #[inline] pub fn peek_left(&self) -> Option<&T> { self.left.peek() }
+
+    /// Borrow the item to the right of the zipper.
+    ///
+    /// # Returns
+    /// - `Some(&T)` if there is an item to the right of the zipper
+    /// - `None` if there are no items to the right of the zipper
     #[inline] pub fn peek_right(&self) -> Option<&T> { self.right.peek() }
+
+    /// Mutably borrow the item to the left of the zipper.
+    ///
+    /// # Returns
+    /// - `Some(&mut T)` if there is an item to the left of the zipper
+    /// - `None` if there are no items to the left of the zipper
     #[inline] pub fn peek_left_mut(&mut self) -> Option<&mut T> {
         self.left.peek_mut()
-     }
+    }
+
+    /// Mutably borrow the item to the right of the zipper.
+    ///
+    /// # Returns
+    /// - `Some(&mut T)` if there is an item to the right of the zipper
+    /// - `None` if there are no items to the right of the zipper
     #[inline] pub fn peek_right_mut(&mut self) -> Option<&mut T> {
         self.right.peek_mut()
     }
 
+    /// Push `elem` to the left of the zipper.
     #[inline] pub fn push_left(&mut self, elem: T) -> &mut Self {
          self.left.push(elem);
          self
      }
 
+    /// Push `elem` to the right of the zipper.
     #[inline] pub fn push_right(&mut self, elem: T) -> &mut Self {
         self.left.push(elem);
         self
     }
 
+    /// Returns the length of the `ZipList`
     #[inline] pub fn len(&self) -> usize { self.left.len() + self.right.len() }
 
+    /// Returns true if there are no items to the left or right of the zipper
     #[inline] pub fn is_empty(&self) -> bool {
         self.left.is_empty() && self.right.is_empty()
     }
 
+    /// Move the zipper one position to the left.
+    ///
+    /// # Returns
+    /// - `true` if the zipper was moved to the left
+    /// - `false` if the zipper is already at the left
     pub fn move_left(&mut self) -> bool {
         self.left.uncons()
             .map(|n| self.right.cons(n))
             .is_some()
     }
 
+    /// Move the zipper one position to the right
+    ///
+    /// # Returns
+    /// - `true` if the zipper was moved to the right
+    /// - `false` if the zipper is already at the right
     pub fn move_right(&mut self) -> bool {
         self.right.uncons()
             .map(|n| self.left.cons(n))
             .is_some()
     }
 
-    pub fn seek_left(&mut self, amount: usize) -> bool {
-        let mut a = amount;
-        while a > 0 && self.move_left() {
-            a -= 1;
+    /// Move the zipper `n` positions to the left
+    ///
+    /// # Returns
+    /// - the number of positions moved. If this is less than `n`, then the
+    ///   zipper reached the end of the list before it finished moving.
+    pub fn seek_left(&mut self, n: usize) -> usize {
+        let mut amount = 0;
+        while amount < n && self.move_left() {
+            amount += 1
         }
-        a == 0
+        amount
     }
 
-    pub fn seek_right(&mut self, amount: usize) -> bool {
-        let mut a = amount;
-        while a > 0 && self.move_right() {
-            a -= 1;
+    /// Move the zipper `n` positions to the right
+    ///
+    /// # Returns
+    /// - the number of positions moved. If this is less than `n`, then the
+    ///   zipper reached the end of the list before it finished moving.
+    pub fn seek_right(&mut self, n: usize) -> usize {
+        let mut amount = 0;
+        while amount < n && self.move_right() {
+            amount += 1;
         }
-        a == 0
+        amount
     }
 
 }
