@@ -300,12 +300,20 @@ impl<T> ZipList<T> {
             .is_some()
     }
 
-    pub fn seek_left(&mut self, amount: usize) {
-        unimplemented!()
+    pub fn seek_left(&mut self, amount: usize) -> bool {
+        let mut a = amount;
+        while a > 0 && self.move_left() {
+            a -= 1;
+        }
+        a == 0
     }
 
-    pub fn seek_right(&mut self, amount: usize) {
-        unimplemented!()
+    pub fn seek_right(&mut self, amount: usize) -> bool {
+        let mut a = amount;
+        while a > 0 && self.move_right() {
+            a -= 1;
+        }
+        a == 0
     }
 
 }
