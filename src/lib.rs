@@ -245,11 +245,34 @@ pub struct ZipList<T> { left: List<T>
 
 impl<T> ZipList<T> {
 
+    /// Returns an iterator over the elements to the left of the zipper.
+    ///
+    /// This iterator starts with the element immediately to the left of the
+    /// zipper. If the zipper is at the left end of the list, the iterator will
+    /// be empty.
     #[inline] pub fn left_iter(&self) -> list::Iter<T> { self.left.iter() }
+
+    /// Returns an iterator over the elements to the right of the zipper.
+    ///
+    /// This iterator starts with the element immediately to the right of the
+    /// zipper. If the zipper is at the right end of the list, the iterator will
+    /// be empty.
     #[inline] pub fn right_iter(&self) -> list::Iter<T> { self.right.iter() }
+
+    /// Returns a mutable iterator over the elements to the left of the zipper.
+    ///
+    /// This iterator starts with the element immediately to the left of the
+    /// zipper. If the zipper is at the left end of the list, the iterator will
+    /// be empty.
     #[inline] pub fn left_iter_mut(&mut self) -> list::IterMut<T> {
         self.left.iter_mut()
-     }
+    }
+
+    /// Returns a mutable iterator over the elements to the right of the zipper.
+    ///
+    /// This iterator starts with the element immediately to the right of the
+    /// zipper. If the zipper is at the right end of the list, the iterator will
+    /// be empty.
     #[inline] pub fn right_iter_mut(&mut self) -> list::IterMut<T> {
         self.right.iter_mut()
     }
