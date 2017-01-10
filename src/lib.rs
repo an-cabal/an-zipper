@@ -245,6 +245,15 @@ pub struct ZipList<T> { left: List<T>
 
 impl<T> ZipList<T> {
 
+    #[inline] pub fn left_iter(&self) -> list::Iter<T> { self.left.iter() }
+    #[inline] pub fn right_iter(&self) -> list::Iter<T> { self.right.iter() }
+    #[inline] pub fn left_iter_mut(&mut self) -> list::IterMut<T> {
+        self.left.iter_mut()
+     }
+    #[inline] pub fn right_iter_mut(&mut self) -> list::IterMut<T> {
+        self.right.iter_mut()
+    }
+
     unstable_const_fn!{
         pub const fn new() -> Self {
             ZipList { left: List::new(), right: List::new() }
